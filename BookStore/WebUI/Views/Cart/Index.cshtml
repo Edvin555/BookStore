@@ -1,0 +1,51 @@
+﻿@model WebUI.Models.CartIndexViewModel
+
+@{
+    ViewBag.Title = "Book Store : Your Cart";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Quantity</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Total</th>
+
+        </tr>
+       
+    </thead>
+    <tbody>
+
+        @foreach (var line in Model.Cart.Lines)
+        {
+            <tr>
+                <td>@line.Quantity</td>
+                <td>@line.Book.Name - @line.Book.Author</td>
+                <td>@line.Book.Price.ToString("# euro")</td>
+                <td>@((line.Quantity * line.Book.Price).ToString("# euro"))</td>
+                <td>
+                    @using (Html.BeginForm("RemoveFromCart", "Cart"))
+                    {
+                    <div class="pull-right">
+                        <input type="hidden" name ="bookId" value="@line.Book.BookId" />
+                        @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
+                        <input type="submit" class="btn btn-success" value="Remove from cart" />
+                    </div>
+                    }
+
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4" >Total:</td>
+            <td>@Model.Cart.ComputeTotalValue().ToString("# euro")</td>
+        </tr>
+    </tfoot>
+</table>
+
+<div>
+    <a class="btn btn primary" href="@Model.ReturnUrl">Continue shopping</a>
+</div>
